@@ -14,7 +14,7 @@ const KPISection = () => {
      <Grid item xs={12} md={4}>
        <StatCard
          title="Sales Today"
-         value={`${dashboardData.salesToday}`}
+         value={`k{dashboardData.salesToday}`}
          icon={<AttachMoneyIcon />}
        />
      </Grid>
