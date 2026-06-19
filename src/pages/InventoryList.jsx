@@ -386,7 +386,7 @@ const updateProduct = async () => {
                   <TableCell>{item.sku}</TableCell>
                   <TableCell>{item.name}</TableCell>
                   <TableCell>{item.category}</TableCell>
-                  <TableCell>${item.price}</TableCell>
+                  <TableCell>k{item.price}</TableCell>
                   <TableCell>{item.stock}</TableCell>
 
                   <TableCell>

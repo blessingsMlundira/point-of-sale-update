@@ -37,10 +37,10 @@ const Sidebar = ({ open = true, onToggle }) => {
     { text: "Sales", icon: <PointOfSale />, path: "/sales" },
     { text: "Inventory", icon: <Inventory />, path: "/inventory" },
     { text: "Inventory Reports", icon: <Assessment />, path: "/inventory-reports" },
-    
     { text: "Sales History", icon: <ReceiptLong />, path: "/sales-history"},
     { text: "Sales Reports", icon: <Assessment />, path: "/sales-reports"},
     { text: "Inventory List", icon: <Inventory />, path: "/inventory-list" },
+    { text: "Users", icon: <Dashboard />, path: "/users" },
     
   ];
 

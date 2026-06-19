@@ -39,7 +39,7 @@ const RecentTransactions = () => {
                </TableCell>
 
                <TableCell>
-                 ${tx.amount}
+                 k{tx.amount}
                </TableCell>
 
              </TableRow>

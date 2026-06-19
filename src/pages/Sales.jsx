@@ -49,8 +49,8 @@ const printReceipt = (sale) => {
       <tr>
         <td>${item.name}</td>
         <td style="text-align:center">${item.qty}</td>
-        <td style="text-align:right">$${item.price}</td>
-        <td style="text-align:right">$${item.total}</td>
+        <td style="text-align:right">K${item.price}</td>
+        <td style="text-align:right">K${item.total}</td>
       </tr>
     `
     )
@@ -136,14 +136,14 @@ const printReceipt = (sale) => {
 
           <div style="display:flex; justify-content:space-between; margin-top:15px; font-size:13px;">
             <span>Subtotal:</span>
-            <span>$${sale.subtotal.toFixed(2)}</span>
+            <span>K${sale.subtotal.toFixed(2)}</span>
           </div>
           <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:13px;">
             <span>VAT (16%):</span>
-            <span>$${sale.vat.toFixed(2)}</span>
+            <span>K${sale.vat.toFixed(2)}</span>
           </div>
           <div class="total">
-            Grand Total: $${sale.total.toFixed(2)}
+            Grand Total: K${sale.total.toFixed(2)}
           </div>
 
           <div class="footer">

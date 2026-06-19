@@ -135,7 +135,7 @@ const printReceipt = (sale) => {
           </table>
 
           <div class="total">
-            Grand Total: $${sale.total}
+            Grand Total: k${sale.total}
           </div>
 
           <div class="footer">
@@ -373,7 +373,7 @@ if (loading) {
                 <TableRow key={i}>
                   <TableCell>{s.invoice}</TableCell>
                  
-                  <TableCell>${s.total}</TableCell>
+                  <TableCell>k{s.total}</TableCell>
                   <TableCell>
                     <Chip label={s.status} color="success" size="small" />
                   </TableCell>

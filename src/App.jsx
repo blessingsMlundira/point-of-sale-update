@@ -12,6 +12,7 @@ import SalesHistory from "./pages/SalesHistory";
 import SalesReports from "./pages/SalesReports";
 import InventoryReports from "./pages/InventoryReports";
 import InventoryList from "./pages/InventoryList";
+import Users from "./pages/Users";
 
 
 function App() {
@@ -45,7 +46,10 @@ function App() {
           <Route path="/inventory-reports" element={<InventoryReports />} />  
 
           {/* Inventory List */}
-          <Route path="/inventory-list" element={<InventoryList />} />  
+          <Route path="/inventory-list" element={<InventoryList />} /> 
+
+          {/* Users */}
+          <Route path="/users" element={<Users />} /> 
 
         </Routes>
       </MainLayout>

@@ -79,7 +79,7 @@ const Dashboard = () => {
           <InfoTile
             icon={<BarChart fontSize="large" />}
             title="Total Revenue"
-            value="$310,450"
+            value="k310,450"
             color="#1976d2"
           />
         </Grid>
