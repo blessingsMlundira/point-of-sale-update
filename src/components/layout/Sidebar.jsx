@@ -33,17 +33,25 @@ const Sidebar = ({ open = true, onToggle }) => {
   const storedUser = localStorage.getItem("posUser");
   const user = storedUser ? JSON.parse(storedUser) : null;
   const isAdmin = user?.role === "Admin";
+  const isCashier = user?.role === "Cashier";
 
-  const menuItems = [
+  const baseMenu = [
     { text: "Dashboard", icon: <Dashboard />, path: "/" },
     { text: "Sales", icon: <PointOfSale />, path: "/sales" },
     { text: "Inventory", icon: <Inventory />, path: "/inventory" },
     { text: "Inventory Reports", icon: <Assessment />, path: "/inventory-reports" },
     { text: "Sales History", icon: <ReceiptLong />, path: "/sales-history"},
     { text: "Sales Reports", icon: <Assessment />, path: "/sales-reports"},
-    { text: "Inventory List", icon: <Inventory />, path: "/inventory-list" },
-    ...(isAdmin ? [{ text: "Users", icon: <Dashboard />, path: "/users" }] : []),
+    { text: "Inventory List", icon: <Inventory />, path: "/inventory-list" }
   ];
+
+  // Cashiers should only see Sales and Sales History links
+  const menuItems = isCashier
+    ? baseMenu.filter((it) => ["/sales", "/sales-history"].includes(it.path))
+    : [
+        ...baseMenu,
+        ...(isAdmin ? [{ text: "Users", icon: <Dashboard />, path: "/users" }] : [])
+      ];
 
   const toggleDrawer = () => {
     if (onToggle) onToggle();

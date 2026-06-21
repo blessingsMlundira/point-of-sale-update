@@ -79,7 +79,7 @@ const Dashboard = () => {
           <InfoTile
             icon={<BarChart fontSize="large" />}
             title="Total Revenue"
-            value="k310,450"
+            value=" + k310,450,000"
             color="#1976d2"
           />
         </Grid>
@@ -93,23 +93,9 @@ const Dashboard = () => {
           />
         </Grid>
 
-        <Grid item xs={12} md={3}>
-          <InfoTile
-            icon={<ReceiptLong fontSize="large" />}
-            title="Transactions"
-            value="1,284"
-            color="#ff9800"
-          />
-        </Grid>
+        
 
-        <Grid item xs={12} md={3}>
-          <InfoTile
-            icon={<LocalShipping fontSize="large" />}
-            title="Pending Orders"
-            value="37"
-            color="#9c27b0"
-          />
-        </Grid>
+        
 
       </Grid>
 
