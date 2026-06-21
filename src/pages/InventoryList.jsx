@@ -198,7 +198,18 @@ const updateProduct = async () => {
   }
 };
 
+const deleteProduct = async (id) => {
+  if (!window.confirm("Delete this product? This action cannot be undone.")) {
+    return;
+  }
 
+  try {
+    await api.delete(`/products/${id}`);
+    loadProducts();
+  } catch (error) {
+    console.error("Failed to delete product:", error);
+  }
+};
 
   const inventorySummary = {
     totalProducts: products.length,
@@ -404,13 +415,23 @@ const updateProduct = async () => {
                   </TableCell>
 
                   <TableCell>
-                   <Button
-                      size="small"
-                      variant="outlined"
-                      onClick={() => openEditDialog(item)}
-                    >
-                      Update
-                    </Button>
+                    <Stack direction="row" spacing={1}>
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        onClick={() => openEditDialog(item)}
+                      >
+                        Update
+                      </Button>
+                      <Button
+                        size="small"
+                        color="error"
+                        variant="outlined"
+                        onClick={() => deleteProduct(item.id)}
+                      >
+                        Delete
+                      </Button>
+                    </Stack>
                   </TableCell>
                 </TableRow>
               ))}

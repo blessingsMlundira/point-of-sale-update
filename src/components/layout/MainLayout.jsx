@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Box } from "@mui/material";
+import { useLocation } from "react-router-dom";
 
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
@@ -9,8 +10,18 @@ const collapsedWidth = 5;
 const topbarHeight = 64;
 
 const MainLayout = ({ children }) => {
+  const location = useLocation();
   const [open, setOpen] = useState(true);
-  const toggle = () => setOpen(v => !v);
+  const toggle = () => setOpen((v) => !v);
+  const hideNav = location.pathname === "/login";
+
+  if (hideNav) {
+    return (
+      <Box sx={{ minHeight: "100vh", backgroundColor: "#f5f7fb" }}>
+        {children}
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ display: "flex" }}>

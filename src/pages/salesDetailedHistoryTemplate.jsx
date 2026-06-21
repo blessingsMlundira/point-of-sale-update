@@ -372,20 +372,49 @@ const Sales = () => {
         throw new Error("Sale created but no saleId returned from backend.");
       }
 
-      const inventoryUpdates = cart.map((item) => {
+      const detailRequests = cart.map((item, index) => {
         const product = products.find((p) => p.id === item.product_id);
-        if (!product) {
-          return Promise.resolve();
+        const updatedStock = product ? Math.max(0, (product.stock || 0) - item.qty) : null;
+
+        const detailedSalePayload = {
+          id: Date.now() + index,
+          sale_id: saleId,
+          invoice_number: invoice,
+          product_id: item.product_id,
+          product_name: item.name,
+          category: item.category || "",
+          quantity: item.qty,
+          unit_price: item.price,
+          line_total: item.total,
+          subtotal: cartTotal,
+          tax_amount: cartVat,
+          discount_amount: 0,
+          grand_total: totalWithVat,
+          payment_method: paymentMethod,
+          payment_reference: "",
+          cashier_id: 0,
+          cashier_name: "Walk-in",
+          customer_id: 0,
+          customer_name: "Walk-in",
+          sale_date: new Date().toISOString()
+        };
+        console.log(detailedSalePayload);
+
+        const detailedSalePromise = api.post("/detailed-sales", detailedSalePayload);
+
+        if (product && updatedStock !== null) {
+          const updateProductPayload = {
+            ...product,
+            stock: updatedStock
+          };
+          const inventoryPromise = api.put(`/products/${item.product_id}`, updateProductPayload);
+          return Promise.all([detailedSalePromise, inventoryPromise]);
         }
 
-        const updatedStock = (product.stock || 0) - item.qty;
-        return api.put(`/products/${item.product_id}`, {
-          ...product,
-          stock: updatedStock
-        });
+        return detailedSalePromise;
       });
 
-      await Promise.all(inventoryUpdates);
+      await Promise.all(detailRequests);
       await loadData();
 
       setCart([]);

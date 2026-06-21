@@ -1,17 +1,15 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 import {
   Dashboard,
   PointOfSale,
   Inventory,
-  People,
-  Settings,
   MenuOpen,
-  Payments,
   Menu,
   ReceiptLong,
-  Assessment
+  Assessment,
+  Logout
 } from "@mui/icons-material";
 
 import {
@@ -31,6 +29,10 @@ const drawerWidth = 250;
 const collapsedWidth = 72;
 
 const Sidebar = ({ open = true, onToggle }) => {
+  const navigate = useNavigate();
+  const storedUser = localStorage.getItem("posUser");
+  const user = storedUser ? JSON.parse(storedUser) : null;
+  const isAdmin = user?.role === "Admin";
 
   const menuItems = [
     { text: "Dashboard", icon: <Dashboard />, path: "/" },
@@ -40,12 +42,16 @@ const Sidebar = ({ open = true, onToggle }) => {
     { text: "Sales History", icon: <ReceiptLong />, path: "/sales-history"},
     { text: "Sales Reports", icon: <Assessment />, path: "/sales-reports"},
     { text: "Inventory List", icon: <Inventory />, path: "/inventory-list" },
-    { text: "Users", icon: <Dashboard />, path: "/users" },
-    
+    ...(isAdmin ? [{ text: "Users", icon: <Dashboard />, path: "/users" }] : []),
   ];
 
   const toggleDrawer = () => {
     if (onToggle) onToggle();
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("posUser");
+    navigate("/login");
   };
 
   return (
@@ -89,20 +95,49 @@ const Sidebar = ({ open = true, onToggle }) => {
       <Divider />
 
       {/* Menu Items */}
-      <List>
-        {menuItems.map((item) => (
+      <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <List sx={{ flexGrow: 1 }}>
+          {menuItems.map((item) => (
+            <ListItemButton
+              key={item.text}
+              component={NavLink}
+              to={item.path}
+              end={item.path === "/"}
+              sx={{
+                justifyContent: open ? "initial" : "center",
+                px: 2,
+                py: 1.5,
+                '&.active': {
+                  bgcolor: 'action.selected'
+                }
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 2 : 0,
+                  justifyContent: "center"
+                }}
+              >
+                {item.icon}
+              </ListItemIcon>
+
+              {open && (
+                <ListItemText primary={item.text} />
+              )}
+            </ListItemButton>
+          ))}
+        </List>
+
+        <Divider />
+
+        <List>
           <ListItemButton
-            key={item.text}
-            component={NavLink}
-            to={item.path}
-            end={item.path === "/"}
+            onClick={handleLogout}
             sx={{
               justifyContent: open ? "initial" : "center",
               px: 2,
-              py: 1.5,
-              '&.active': {
-                bgcolor: 'action.selected'
-              }
+              py: 1.5
             }}
           >
             <ListItemIcon
@@ -112,15 +147,12 @@ const Sidebar = ({ open = true, onToggle }) => {
                 justifyContent: "center"
               }}
             >
-              {item.icon}
+              <Logout />
             </ListItemIcon>
-
-            {open && (
-              <ListItemText primary={item.text} />
-            )}
+            {open && <ListItemText primary="Logout" />}
           </ListItemButton>
-        ))}
-      </List>
+        </List>
+      </Box>
     </Drawer>
   );
 };

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import api from "../services/api";
 
 import {
   Box,
@@ -12,7 +13,17 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TableRow
+  TableRow,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Stack,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from "@mui/material";
 
 import {
@@ -46,14 +57,6 @@ const userSummary = {
   newUsers: 12
 };
 
-const roleDistribution = [
-  { name: "Cashiers", value: 35 },
-  { name: "Managers", value: 18 },
-  { name: "Inventory", value: 15 },
-  { name: "Admins", value: 8 },
-  { name: "HR", value: 8 }
-];
-
 const userActivity = [
   { month: "Jan", users: 52 },
   { month: "Feb", users: 58 },
@@ -63,36 +66,16 @@ const userActivity = [
   { month: "Jun", users: 84 }
 ];
 
-const users = [
-  {
-    id: "USR-001",
-    name: "John Banda",
-    role: "Administrator",
-    department: "IT",
-    status: "Active"
-  },
-  {
-    id: "USR-002",
-    name: "Mary Phiri",
-    role: "Cashier",
-    department: "Sales",
-    status: "Active"
-  },
-  {
-    id: "USR-003",
-    name: "Peter Chirwa",
-    role: "Inventory Officer",
-    department: "Warehouse",
-    status: "Inactive"
-  },
-  {
-    id: "USR-004",
-    name: "Agnes Mwale",
-    role: "Manager",
-    department: "Operations",
-    status: "Active"
-  }
+const roleOptions = [
+  "Administrator",
+  "Cashier",
+  "Inventory Officer",
+  "Manager",
+  "HR",
+  "Other"
 ];
+
+const statusOptions = ["Active", "Inactive"];
 
 /* -----------------------------
    KPI CARD
@@ -129,6 +112,145 @@ const InfoTile = ({ icon, title, value, color }) => (
 ------------------------------ */
 
 const Users = () => {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [addOpen, setAddOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [formUser, setFormUser] = useState({
+    employee_code: "",
+    username: "",
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone: "",
+    role: "Cashier",
+    status: "Active"
+  });
+
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const loadUsers = async () => {
+    try {
+      const response = await api.get("/users");
+      const payload = response.data?.data || response.data || [];
+      setUsers(Array.isArray(payload) ? payload : []);
+    } catch (error) {
+      console.error("Failed to load users:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetFormUser = () => {
+    setSelectedUser(null);
+    setFormUser({
+      employee_code: "",
+      username: "",
+      first_name: "",
+      last_name: "",
+      email: "",
+      phone: "",
+      role: "Cashier",
+      status: "Active"
+    });
+  };
+
+  const openAddDialog = () => {
+    resetFormUser();
+    setAddOpen(true);
+  };
+
+  const openEditDialog = (user) => {
+    setSelectedUser(user);
+    setFormUser({
+      employee_code: user.employee_code || "",
+      username: user.username || "",
+      first_name: user.first_name || "",
+      last_name: user.last_name || "",
+      email: user.email || "",
+      phone: user.phone || "",
+      role: user.role || "Cashier",
+      status: user.status || "Active"
+    });
+    setEditOpen(true);
+  };
+
+  const closeDialog = () => {
+    setAddOpen(false);
+    setEditOpen(false);
+    resetFormUser();
+  };
+
+  const handleFormChange = (field) => (event) => {
+    setFormUser((prev) => ({
+      ...prev,
+      [field]: event.target.value
+    }));
+  };
+
+  const createUser = async () => {
+    try {
+      await api.post("/users", formUser);
+      closeDialog();
+      loadUsers();
+    } catch (error) {
+      console.error("Failed to create user:", error);
+      alert("Failed to create user.");
+    }
+  };
+
+  const updateUser = async () => {
+    if (!selectedUser) return;
+    try {
+      await api.put(`/users/${selectedUser.id}`, formUser);
+      closeDialog();
+      loadUsers();
+    } catch (error) {
+      console.error("Failed to update user:", error);
+      alert("Failed to update user.");
+    }
+  };
+
+  const deleteUser = async (userId) => {
+    if (!window.confirm("Delete this user? This action cannot be undone.")) return;
+    try {
+      await api.delete(`/users/${userId}`);
+      loadUsers();
+    } catch (error) {
+      console.error("Failed to delete user:", error);
+      alert("Failed to delete user.");
+    }
+  };
+
+  const totalUsers = users.length;
+  const activeUsers = users.filter((user) => user.status === "Active").length;
+  const administrators = users.filter((user) => /admin/i.test(user.role)).length;
+  const newUsers = users.filter((user) => {
+    const createdAt = user.created_at || user.createdAt;
+    if (!createdAt) return false;
+    const created = new Date(createdAt).getTime();
+    return created >= Date.now() - 30 * 24 * 60 * 60 * 1000;
+  }).length;
+
+  const roleDistribution = Object.entries(
+    users.reduce((acc, user) => {
+      const name = user.role || "Other";
+      acc[name] = (acc[name] || 0) + 1;
+      return acc;
+    }, {})
+  ).map(([name, value]) => ({ name, value }));
+
+  if (loading) {
+    return (
+      <Box p={3}>
+        <Typography>Loading users...</Typography>
+      </Box>
+    );
+  }
+
   return (
     <Box>
 
@@ -161,6 +283,7 @@ const Users = () => {
           <Button
             variant="contained"
             startIcon={<Add />}
+            onClick={openAddDialog}
             sx={{
               bgcolor: "white",
               color: "#2575fc",
@@ -181,7 +304,7 @@ const Users = () => {
           <InfoTile
             icon={<Group fontSize="large" />}
             title="Total Users"
-            value={userSummary.totalUsers}
+            value={totalUsers}
             color="#1976d2"
           />
         </Grid>
@@ -190,25 +313,25 @@ const Users = () => {
           <InfoTile
             icon={<ManageAccounts fontSize="large" />}
             title="Active Users"
-            value={userSummary.activeUsers}
+            value={activeUsers}
             color="#4caf50"
           />
         </Grid>
 
-        <Grid item >
+        <Grid item>
           <InfoTile
             icon={<AdminPanelSettings fontSize="large" />}
             title="Administrators"
-            value={userSummary.administrators}
+            value={administrators}
             color="#ff9800"
           />
         </Grid>
 
-        <Grid item >
+        <Grid item>
           <InfoTile
             icon={<PersonAdd fontSize="large" />}
             title="New Users"
-            value={userSummary.newUsers}
+            value={newUsers}
             color="#9c27b0"
           />
         </Grid>
@@ -309,54 +432,148 @@ const Users = () => {
             <TableHead>
               <TableRow>
                 <TableCell>User ID</TableCell>
-                <TableCell>Name</TableCell>
+                <TableCell>Employee Code</TableCell>
+                <TableCell>Username</TableCell>
+                <TableCell>Full Name</TableCell>
                 <TableCell>Role</TableCell>
-                <TableCell>Department</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
 
             <TableBody>
-
-              {users.map((user) => (
-                <TableRow key={user.id}>
-
-                  <TableCell>{user.id}</TableCell>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.role}</TableCell>
-                  <TableCell>{user.department}</TableCell>
-
-                  <TableCell>
-                    <Chip
-                      label={user.status}
-                      size="small"
-                      color={
-                        user.status === "Active"
-                          ? "success"
-                          : "error"
-                      }
-                    />
+              {users.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} align="center">
+                    No users found.
                   </TableCell>
-
-                  <TableCell>
-                    <Button
-                      size="small"
-                      variant="outlined"
-                    >
-                      Edit
-                    </Button>
-                  </TableCell>
-
                 </TableRow>
-              ))}
-
+              ) : (
+                users.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell>{user.id}</TableCell>
+                    <TableCell>{user.employee_code}</TableCell>
+                    <TableCell>{user.username}</TableCell>
+                    <TableCell>{`${user.first_name || ""} ${user.last_name || ""}`.trim()}</TableCell>
+                    <TableCell>{user.role}</TableCell>
+                    <TableCell>
+                      <Chip
+                        label={user.status}
+                        size="small"
+                        color={user.status === "Active" ? "success" : "error"}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Stack direction="row" spacing={1}>
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          onClick={() => openEditDialog(user)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          size="small"
+                          color="error"
+                          variant="outlined"
+                          onClick={() => deleteUser(user.id)}
+                        >
+                          Delete
+                        </Button>
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
 
           </Table>
 
         </CardContent>
       </Card>
+
+      <Dialog open={addOpen || editOpen} onClose={closeDialog} fullWidth maxWidth="sm">
+        <DialogTitle>{selectedUser ? "Edit User" : "Add User"}</DialogTitle>
+        <DialogContent dividers>
+          <Stack spacing={2} mt={1}>
+            <TextField
+              label="Employee Code"
+              value={formUser.employee_code}
+              onChange={handleFormChange("employee_code")}
+              fullWidth
+            />
+            <TextField
+              label="Username"
+              value={formUser.username}
+              onChange={handleFormChange("username")}
+              fullWidth
+            />
+            <TextField
+              label="First Name"
+              value={formUser.first_name}
+              onChange={handleFormChange("first_name")}
+              fullWidth
+            />
+            <TextField
+              label="Last Name"
+              value={formUser.last_name}
+              onChange={handleFormChange("last_name")}
+              fullWidth
+            />
+            <TextField
+              label="Email"
+              value={formUser.email}
+              onChange={handleFormChange("email")}
+              fullWidth
+            />
+            <TextField
+              label="Phone"
+              value={formUser.phone}
+              onChange={handleFormChange("phone")}
+              fullWidth
+            />
+            <FormControl fullWidth>
+              <InputLabel id="role-label">Role</InputLabel>
+              <Select
+                labelId="role-label"
+                label="Role"
+                value={formUser.role}
+                onChange={handleFormChange("role")}
+              >
+                {roleOptions.map((role) => (
+                  <MenuItem key={role} value={role}>
+                    {role}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl fullWidth>
+              <InputLabel id="status-label">Status</InputLabel>
+              <Select
+                labelId="status-label"
+                label="Status"
+                value={formUser.status}
+                onChange={handleFormChange("status")}
+              >
+                {statusOptions.map((status) => (
+                  <MenuItem key={status} value={status}>
+                    {status}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeDialog}>Cancel</Button>
+          <Button
+            variant="contained"
+            onClick={selectedUser ? updateUser : createUser}
+          >
+            {selectedUser ? "Save Changes" : "Create User"}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
     </Box>
   );

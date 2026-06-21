@@ -20,7 +20,11 @@ import {
   DialogActions,
   TextField,
   Stack,
-  Divider
+  Divider,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from "@mui/material";
 
 import {
@@ -77,6 +81,7 @@ const InfoCard = ({ icon, title, value, color }) => (
 ------------------------------ */
 const Inventory = () => {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editOpen, setEditOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
@@ -98,7 +103,17 @@ const [newProduct, setNewProduct] = useState({
 
   useEffect(() => {
     loadProducts();
+    loadCategories();
   }, []);
+
+  const loadCategories = async () => {
+    try {
+      const response = await api.get("/categories");
+      setCategories(response.data || []);
+    } catch (error) {
+      console.error("Failed to load categories:", error);
+    }
+  };
 
   const loadProducts = async () => {
     try {
@@ -148,7 +163,7 @@ const [newProduct, setNewProduct] = useState({
   const openAddDialog = () => {
     setNewProduct({
       name: "",
-      category: "",
+      category: categories.length > 0 ? categories[0].name : "",
       price: "",
       stock: ""
     });
@@ -424,12 +439,25 @@ const updateProduct = async () => {
         fullWidth
       />
 
-      <TextField
-        label="Category"
-        value={editingProduct.category}
-        onChange={handleEditChange("category")}
-        fullWidth
-      />
+      <FormControl fullWidth>
+        <InputLabel id="edit-category-label">Category</InputLabel>
+        <Select
+          labelId="edit-category-label"
+          label="Category"
+          value={editingProduct.category}
+          onChange={handleEditChange("category")}
+        >
+          {categories.length === 0 ? (
+            <MenuItem value="">No categories available</MenuItem>
+          ) : (
+            categories.map((category) => (
+              <MenuItem key={category.id} value={category.category_name}>
+                {category.category_name}
+              </MenuItem>
+            ))
+          )}
+        </Select>
+      </FormControl>
 
       <TextField
         label="Price"
@@ -485,13 +513,25 @@ const updateProduct = async () => {
         placeholder="Enter product name"
       />
 
-      <TextField
-        label="Category"
-        value={newProduct.category}
-        onChange={handleAddChange("category")}
-        fullWidth
-        placeholder="Enter category"
-      />
+      <FormControl fullWidth>
+        <InputLabel id="add-category-label">Category</InputLabel>
+        <Select
+          labelId="add-category-label"
+          label="Category"
+          value={newProduct.category}
+          onChange={handleAddChange("category")}
+        >
+          {categories.length === 0 ? (
+            <MenuItem value="">No categories available</MenuItem>
+          ) : (
+            categories.map((category) => (
+              <MenuItem key={category.id} value={category.category_name}>
+                {category.category_name}
+              </MenuItem>
+            ))
+          )}
+        </Select>
+      </FormControl>
 
       <TextField
         label="Price"
