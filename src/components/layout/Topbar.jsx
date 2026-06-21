@@ -20,12 +20,12 @@ const Topbar = () => {
     <AppBar position="static" color="inherit" elevation={1}>
       <Toolbar>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Dynamics POS Dashboard
+          Dashboard
         </Typography>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <CloudDoneIcon color="success" />
-          <Typography>Dynamics Connected</Typography>
+          <Typography>Connected</Typography>
           <Typography sx={{ fontWeight: 600 }}>{username}</Typography>
           <Avatar>{username.charAt(0).toUpperCase()}</Avatar>
           <IconButton onClick={handleLogout} color="inherit" size="large">

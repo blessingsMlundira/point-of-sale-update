@@ -64,7 +64,7 @@ const Dashboard = () => {
         }}
       >
         <Typography variant="h4" fontWeight="bold">
-          Dynamics POS Dashboard
+          Dashboard
         </Typography>
 
         <Typography sx={{ opacity: 0.9 }}>

@@ -333,10 +333,10 @@ if (loading) {
         }}
       >
         <Typography variant="h4" fontWeight="bold">
-          Smart POS Sales System
+          AfriCore POS Sales System
         </Typography>
         <Typography sx={{ opacity: 0.9 }}>
-          Type-to-search product selection (Dynamics-style)
+          Powered by AfriCore ERP - Retail & Inventory Management System
         </Typography>
       </Box>
 
