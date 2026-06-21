@@ -74,23 +74,43 @@ const Sidebar = ({ open = true, onToggle }) => {
     >
       {/* Header / Toggle Section */}
       <Toolbar
-        sx={{
-          display: "flex",
-          justifyContent: open ? "space-between" : "center",
-          alignItems: "center",
-          px: 1
-        }}
-      >
-        {open && (
-          <Typography variant="subtitle1" fontWeight="bold">
-            POS System
-          </Typography>
-        )}
+  sx={{
+    display: "flex",
+    flexDirection: open ? "row" : "column",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 1.5,
+    py: 2
+  }}
+>
+  {/* LOGO */}
+  <Box
+    component="img"
+    src="/logo.jpeg"
+    alt="Logo"
+    sx={{
+      width: open ? 45 : 38,
+      height: open ? 45 : 38,
+      borderRadius: "50%",
+      objectFit: "cover",
+      border: "2px solid #1976d2",
+      boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+      transition: "all 0.3s ease"
+    }}
+  />
 
-        <IconButton onClick={toggleDrawer}>
-          {open ? <MenuOpen /> : <Menu />}
-        </IconButton>
-      </Toolbar>
+  {/* TITLE (only when open) */}
+  {open && (
+    <Typography variant="subtitle1" fontWeight="bold">
+      AfriCore
+    </Typography>
+  )}
+
+  {/* TOGGLE BUTTON */}
+  <IconButton onClick={toggleDrawer}>
+    {open ? <MenuOpen /> : <Menu />}
+  </IconButton>
+</Toolbar>
 
       <Divider />
 

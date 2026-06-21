@@ -13,8 +13,6 @@ import {
   Alert
 } from "@mui/material";
 
-import { PointOfSale } from "@mui/icons-material";
-
 const Login = () => {
   const [employeeCode, setEmployeeCode] = useState("");
   const [username, setUsername] = useState("");
@@ -73,7 +71,7 @@ const Login = () => {
         p: 2
       }}
     >
-      {/* CURVED GRADIENT HEADER */}
+      {/* BACKGROUND HEADER */}
       <Box
         sx={{
           position: "absolute",
@@ -89,7 +87,7 @@ const Login = () => {
         }}
       />
 
-      {/* DECORATIVE CIRCLES */}
+      {/* DECORATIVE ELEMENTS */}
       <Box
         sx={{
           position: "absolute",
@@ -116,115 +114,99 @@ const Login = () => {
         }}
       />
 
-      <Box
-        sx={{
-          position: "absolute",
-          bottom: -80,
-          right: -80,
-          width: 250,
-          height: 250,
-          borderRadius: "50%",
-          background:
-            "linear-gradient(135deg, rgba(25,118,210,.08), rgba(0,198,255,.08))",
-          zIndex: 0
-        }}
-      />
-
       {/* LOGIN CARD */}
       <Card
         sx={{
           width: "100%",
           maxWidth: 450,
           borderRadius: 6,
-          overflow: "hidden",
+          overflow: "visible",
+          position: "relative",
           zIndex: 2,
           backdropFilter: "blur(18px)",
           background: "rgba(255,255,255,0.92)",
           boxShadow: "0 20px 60px rgba(0,0,0,0.15)"
         }}
       >
-        <CardContent sx={{ p: 5 }}>
-          {/* LOGO SECTION */}
-          <Box textAlign="center" mb={4}>
-            <Box
-              sx={{
-                width: 90,
-                height: 90,
-                borderRadius: "50%",
-                background:
-                  "linear-gradient(135deg,#1976d2,#00c6ff)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                mx: "auto",
-                mb: 2,
-                boxShadow: "0 10px 25px rgba(25,118,210,0.35)"
-              }}
-            >
-              <PointOfSale
-                sx={{
-                  fontSize: 46,
-                  color: "#fff"
-                }}
-              />
+        {/* FLOATING LOGO */}
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 95,
+            height: 95,
+            borderRadius: "50%",
+            background: "#fff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+            border: "4px solid white",
+            zIndex: 3,
+            overflow: "hidden"
+          }}
+        >
+          <Box
+            component="img"
+            src="/logo.jpeg"
+            alt="Logo"
+            sx={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover"
+            }}
+          />
+        </Box>
+
+        <CardContent  sx={{
+            p: 5,
+            pt: 7,
+            display: "flex",
+            flexDirection: "column",
+            minHeight: 280 // gives room for true centering
+          }}>
+          {/* TITLE */}
+          <Box
+            sx={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              textAlign: "center"
+            }}
+          >
+            <Box>
+              <Typography color="text.secondary" sx={{ mt: 2 }}>
+                Powered by AfriCore ERP
+              </Typography>
+            </Box>
             </Box>
 
-            <Typography
-              variant="h4"
-              fontWeight="bold"
-              sx={{
-                background:
-                  "linear-gradient(135deg,#1976d2,#00c6ff)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent"
-              }}
-            >
-              Smart POS
-            </Typography>
-
-            <Typography
-              color="text.secondary"
-              sx={{ mt: 2, mb: 4 }}
-            >
-              Retail & Inventory Management System
-            </Typography>
-          </Box>
-
-          {/* LOGIN FORM */}
+          {/* FORM */}
           <Box component="form" onSubmit={handleSubmit}>
             <Stack spacing={2.5}>
-              {error && (
-                <Alert severity="error">
-                  {error}
-                </Alert>
-              )}
+              {error && <Alert severity="error">{error}</Alert>}
 
               <TextField
                 label="Employee Code"
                 value={employeeCode}
-                onChange={(e) =>
-                  setEmployeeCode(e.target.value)
-                }
+                onChange={(e) => setEmployeeCode(e.target.value)}
                 fullWidth
                 autoFocus
                 sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 3
-                  }
+                  "& .MuiOutlinedInput-root": { borderRadius: 3 }
                 }}
               />
 
               <TextField
                 label="Username"
                 value={username}
-                onChange={(e) =>
-                  setUsername(e.target.value)
-                }
+                onChange={(e) => setUsername(e.target.value)}
                 fullWidth
                 sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 3
-                  }
+                  "& .MuiOutlinedInput-root": { borderRadius: 3 }
                 }}
               />
 
@@ -262,4 +244,3 @@ const Login = () => {
 };
 
 export default Login;
-

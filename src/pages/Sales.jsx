@@ -110,11 +110,21 @@ const printReceipt = (sale) => {
             font-size: 11px;
             margin-top: 15px;
           }
+
+          .logo {
+            display: block;
+            margin: 0 auto 10px auto;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+          }
         </style>
       </head>
 
       <body>
         <div class="receipt">
+          <img src="/logo.jpeg" class="logo" />
           <h2>POS RECEIPT</h2>
           <div class="meta">
             Invoice: ${sale.invoice}<br/>
