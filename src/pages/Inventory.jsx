@@ -91,14 +91,16 @@ const [editingProduct, setEditingProduct] = useState({
   name: "",
   category: "",
   price: "",
-  stock: ""
+  stock: "",
+  barcode: ""
 });
 
 const [newProduct, setNewProduct] = useState({
   name: "",
   category: "",
   price: "",
-  stock: ""
+  stock: "",
+  barcode: ""
 });
 
   useEffect(() => {
@@ -144,7 +146,8 @@ const [newProduct, setNewProduct] = useState({
         name: newProduct.name,
         category: newProduct.category,
         price: Number(newProduct.price),
-        stock: Number(newProduct.stock)
+        stock: Number(newProduct.stock),
+        barcode: newProduct.barcode
       });
 
       setAddOpen(false);
@@ -152,7 +155,8 @@ const [newProduct, setNewProduct] = useState({
         name: "",
         category: "",
         price: "",
-        stock: ""
+        stock: "",
+        barcode: ""
       });
       loadProducts();
     } catch (error) {
@@ -165,7 +169,8 @@ const [newProduct, setNewProduct] = useState({
       name: "",
       category: categories.length > 0 ? categories[0].name : "",
       price: "",
-      stock: ""
+      stock: "",
+      barcode: ""
     });
     setAddOpen(true);
   };
@@ -183,7 +188,8 @@ const [newProduct, setNewProduct] = useState({
     name: product.name,
     category: product.category || "",
     price: product.price,
-    stock: product.stock
+    stock: product.stock,
+    barcode: product.barcode || ""
   });
 
   setEditOpen(true);
@@ -202,7 +208,8 @@ const updateProduct = async () => {
       name: editingProduct.name,
       category: editingProduct.category,
       price: Number(editingProduct.price),
-      stock: Number(editingProduct.stock)
+      stock: Number(editingProduct.stock),
+      barcode: editingProduct.barcode
     });
 
     setEditOpen(false);
@@ -369,6 +376,7 @@ const updateProduct = async () => {
             <TableHead>
               <TableRow>
                 <TableCell>SKU</TableCell>
+                <TableCell>Barcode</TableCell>
                 <TableCell>Product</TableCell>
                 <TableCell>Category</TableCell>
                 <TableCell>Price</TableCell>
@@ -382,6 +390,7 @@ const updateProduct = async () => {
               {products.map((item) => (
                 <TableRow key={item.sku}>
                   <TableCell>{item.sku}</TableCell>
+                  <TableCell>{item.barcode}</TableCell>
                   <TableCell>{item.name}</TableCell>
                   <TableCell>{item.category}</TableCell>
                   <TableCell>k{item.price}</TableCell>
@@ -436,6 +445,13 @@ const updateProduct = async () => {
         label="Product Name"
         value={editingProduct.name}
         onChange={handleEditChange("name")}
+        fullWidth
+      />
+
+      <TextField
+        label="Barcode"
+        value={editingProduct.barcode}
+        onChange={handleEditChange("barcode")}
         fullWidth
       />
 
@@ -511,6 +527,14 @@ const updateProduct = async () => {
         onChange={handleAddChange("name")}
         fullWidth
         placeholder="Enter product name"
+      />
+
+      <TextField
+        label="Barcode"
+        value={newProduct.barcode}
+        onChange={handleAddChange("barcode")}
+        fullWidth
+        placeholder="Enter barcode"
       />
 
       <FormControl fullWidth>

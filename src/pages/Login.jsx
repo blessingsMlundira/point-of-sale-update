@@ -45,7 +45,11 @@ const Login = () => {
       }
 
       localStorage.setItem("posUser", JSON.stringify(user));
-      navigate("/");
+      if (user.role?.toLowerCase() === "cashier") {
+        navigate("/sales");
+      } else {
+        navigate("/");
+      }
     } catch (err) {
       console.error("Login failed:", err);
       setError(
